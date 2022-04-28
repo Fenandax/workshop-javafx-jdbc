@@ -49,18 +49,17 @@ public class FormularioDepartamentoController implements Initializable {
 	@FXML
 	public void onBtSalvarAction(ActionEvent evento) {
 		if (entidade == null) {
-			throw new IllegalStateException("Estidade está nula");
+			throw new IllegalStateException("Entity was null");
 		}
 		if (servico == null) {
-			throw new IllegalStateException("Serviço está nulo");
+			throw new IllegalStateException("Service was null");
 		}
 		try {
 			entidade = getDadosFormulados();
 			servico.salveOuUpdate(entidade);
 			Utils.estagioAtual(evento).close();
-		}
-		catch (DbException e) {
-			Alerts.showAlert("Erro ao salvar objeto", null, e.getMessage(), AlertType.ERROR);
+		} catch (DbException e) {
+			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 
@@ -68,7 +67,8 @@ public class FormularioDepartamentoController implements Initializable {
 		Department obj = new Department();
 
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
-		obj.setName(txtId.getText());
+		obj.setName(txtNome.getText());
+
 		return obj;
 	}
 

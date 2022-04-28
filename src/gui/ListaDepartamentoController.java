@@ -85,6 +85,7 @@ public class ListaDepartamentoController implements Initializable {
 			FormularioDepartamentoController controller = loader.getController();
 			controller.setDepartamento(obj);
 			controller.updateDadosFormulario();
+			
 			controller.setServicoDepartamento(new ServicoDepartamento());
 
 			
