@@ -1,16 +1,18 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -22,6 +24,8 @@ public class FormularioDepartamentoController implements Initializable {
 
 	private Department entidade;
 	private ServicoDepartamento servico;
+
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
 	private TextField txtId;
@@ -46,6 +50,10 @@ public class FormularioDepartamentoController implements Initializable {
 		this.servico = servico;
 	}
 
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
+
 	@FXML
 	public void onBtSalvarAction(ActionEvent evento) {
 		if (entidade == null) {
@@ -57,9 +65,16 @@ public class FormularioDepartamentoController implements Initializable {
 		try {
 			entidade = getDadosFormulados();
 			servico.salveOuUpdate(entidade);
+			notifyDataChangeListener();
 			Utils.estagioAtual(evento).close();
 		} catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
+		}
+	}
+
+	private void notifyDataChangeListener() {
+		for (DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
 		}
 	}
 
