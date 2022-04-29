@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -134,6 +136,26 @@ public class FormularioSellerController implements Initializable {
 		}
 		obj.setName(txtNome.getText());
 
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
+			exception.addErros("email", "O e-mail não pode ficar vazio");
+		}
+		obj.setEmail(txtEmail.getText());
+
+		if (dpNascimento.getValue() == null) {
+			exception.addErros("nascimento", "A data de nascimento não pode ficar vazia");
+		}
+		else {
+		Instant instant = Instant.from(dpNascimento.getValue().atStartOfDay(ZoneId.systemDefault()));
+		obj.setBirthDate(Date.from(instant));
+		}
+
+		if (txtSalario.getText() == null || txtSalario.getText().trim().equals("")) {
+			exception.addErros("salario", "O salário não pode ficar vazio");
+		}
+		obj.setBaseSalary(Utils.tryParseToDouble(txtSalario.getText()));
+		
+		obj.setDepartment(comboBoxDepartment.getValue());
+
 		if (exception.getErros().size() > 0) {
 			throw exception;
 		}
@@ -195,6 +217,30 @@ public class FormularioSellerController implements Initializable {
 
 		if (espacos.contains("nome")) {
 			labelErroNome.setText(erros.get("nome"));
+		}
+		else {
+			labelErroNome.setText(erros.get(""));
+		}
+
+		if (espacos.contains("email")) {
+			labelErroEmail.setText(erros.get("email"));
+		}
+		else {
+			labelErroEmail.setText(erros.get(""));
+		}
+
+		if (espacos.contains("salario")) {
+			labelErroSalario.setText(erros.get("salario"));
+		}
+		else {
+			labelErroSalario.setText(erros.get(""));
+		}
+		
+		if (espacos.contains("nascimento")) {
+			labelErroNascimento.setText(erros.get("nascimento"));
+		}
+		else {
+			labelErroNascimento.setText(erros.get(""));
 		}
 	}
 
