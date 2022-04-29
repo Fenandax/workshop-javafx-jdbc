@@ -69,7 +69,7 @@ public class FormularioDepartamentoController implements Initializable {
 			entidade = getDadosFormulados();
 			servico.salveOuUpdate(entidade);
 			notifyDataChangeListener();
-			Utils.estagioAtual(evento).close();
+			Utils.currentStage(evento).close();
 		} 
 		catch (ValidationException e) {
 			setMensagemErro(e.getErros());
@@ -106,7 +106,7 @@ public class FormularioDepartamentoController implements Initializable {
 
 	@FXML
 	public void onBtCancelarAction(ActionEvent evento) {
-		Utils.estagioAtual(evento).close();
+		Utils.currentStage(evento).close();
 	}
 
 	@Override

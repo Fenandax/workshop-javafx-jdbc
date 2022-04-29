@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class Utils {
 
-	public static Stage estagioAtual(ActionEvent evento) {
+	public static Stage currentStage(ActionEvent evento) {
 		return (Stage) ((Node) evento.getSource()).getScene().getWindow();
 	}
 
