@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -16,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -37,7 +41,25 @@ public class FormularioSellerController implements Initializable {
 	private TextField txtNome;
 
 	@FXML
+	private TextField txtEmail;
+	
+	@FXML
+	private DatePicker dpNascimento;
+	
+	@FXML
+	private TextField txtSalario;
+	
+	@FXML
 	private Label labelErroNome;
+	
+	@FXML
+	private Label labelErroEmail;
+	
+	@FXML
+	private Label labelErroNascimento;
+	
+	@FXML
+	private Label labelErroSalario;
 
 	@FXML
 	private Button btSalvar;
@@ -116,7 +138,10 @@ public class FormularioSellerController implements Initializable {
 
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtNome, 30);
+		Constraints.setTextFieldMaxLength(txtNome, 70);
+		Constraints.setTextFieldDouble(txtSalario);
+		Constraints.setTextFieldMaxLength(txtEmail, 60);
+		Utils.formatDatePicker(dpNascimento, "dd/MM/yyyy");
 	}
 
 	public void updateDadosFormulario() {
@@ -126,6 +151,12 @@ public class FormularioSellerController implements Initializable {
 
 		txtId.setText(String.valueOf(entidade.getId()));
 		txtNome.setText(entidade.getName());
+		txtEmail.setText(entidade.getEmail());
+		Locale.setDefault(Locale.US);
+		txtSalario.setText(String.format("%.2f", entidade.getBaseSalary()));
+		if (entidade.getBirthDate() != null) {
+		dpNascimento.setValue(LocalDate.ofInstant(entidade.getBirthDate().toInstant(), ZoneId.systemDefault()));
+		}
 	}
 
 	private void setMensagemErro(Map<String, String> erros) {
