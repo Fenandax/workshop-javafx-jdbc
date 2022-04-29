@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.ServicoDepartamento;
 
 public class FormularioDepartamentoController implements Initializable {
@@ -67,7 +70,11 @@ public class FormularioDepartamentoController implements Initializable {
 			servico.salveOuUpdate(entidade);
 			notifyDataChangeListener();
 			Utils.estagioAtual(evento).close();
-		} catch (DbException e) {
+		} 
+		catch (ValidationException e) {
+			setMensagemErro(e.getErros());
+		}
+		catch (DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -81,8 +88,18 @@ public class FormularioDepartamentoController implements Initializable {
 	private Department getDadosFormulados() {
 		Department obj = new Department();
 
+		ValidationException exception = new ValidationException("Exceção de validação");
+
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+
+		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) {
+			exception.addErros("nome", "O nome não pode ficar vazio");
+		}
 		obj.setName(txtNome.getText());
+
+		if (exception.getErros().size() > 0) {
+			throw exception;
+		}
 
 		return obj;
 	}
@@ -111,4 +128,11 @@ public class FormularioDepartamentoController implements Initializable {
 		txtNome.setText(entidade.getName());
 	}
 
+	private void setMensagemErro(Map<String, String> erros) {
+		Set<String> espacos = erros.keySet();
+
+		if (espacos.contains("nome")) {
+			labelErroNome.setText(erros.get("nome"));
+		}
+	}
 }
